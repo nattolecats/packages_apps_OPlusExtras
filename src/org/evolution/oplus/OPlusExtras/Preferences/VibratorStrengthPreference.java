@@ -39,7 +39,12 @@ public class VibratorStrengthPreference extends CustomSeekBarPreference {
         mDefaultValueExists = true;
         mDefVal = mAllValues[0];
         mDefaultValue = mDefVal;
-        mValue = Integer.parseInt(loadValue(context));
+        
+        try {
+            mValue = Integer.parseInt(loadValue(context));
+        } catch (NumberFormatException e) {
+            mValue = Integer.parseInt(loadValue(context).substring(2), 16);
+        }
 
         int[] tempVibrationPattern = context.getResources().getIntArray(R.array.test_vibration_pattern);
         testVibrationPattern = new long[tempVibrationPattern.length];
