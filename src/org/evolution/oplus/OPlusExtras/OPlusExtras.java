@@ -27,6 +27,7 @@ import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceManager;
 import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceClickListener;
 import androidx.preference.SwitchPreference;
 
 import java.util.Arrays;
@@ -118,6 +119,10 @@ public class OPlusExtras extends PreferenceFragment
     private static final long testVibrationPattern[] = {0,5};
     private CustomSeekBarPreference mVibratorStrengthPreference;
     private Vibrator mVibrator;
+    
+    // Custom Parts Shortcuts
+    private static final String KEY_PARTS_SHORTCUT = "parts_shortcut";
+    private Preference mPartsShortcutPreference;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -396,6 +401,21 @@ public class OPlusExtras extends PreferenceFragment
         if (!getResources().getBoolean(R.bool.config_deviceSupportsVibStrength)) {
             findPreference(KEY_VIBRATOR_STRENGTH).setVisible(false);
         }
+        
+        // Custom Parts Shortcuts
+        mPartsShortcutPreference = (Preference) findPreference(KEY_PARTS_SHORTCUT);
+        mPartsShortcutPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            public boolean onPreferenceClick(Preference preference) {
+                // Launch custom parts app
+                try {
+                    Runtime.getRuntime().exec("am start -n " + getResources().getString(R.string.parts_shortcut_packageName));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                
+                return true;
+            }
+        });
 
         // Remove OPlusExtras categories if none of their preferences are visible
         for (PreferenceCategory category : categories) {
